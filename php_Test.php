@@ -1,10 +1,10 @@
 <?php
-    include_once('../includes/css.php');
-    include_once('../includes/js.php');
-    include_once('../config/config.php');
-    include_once('../config/db.php');
+    include_once('includes/css.php');
+    include_once('includes/js.php');
+    include_once('config/config.php');
+    include_once('config/db.php');
 
-    $sql = "SELECT * from users WHERE tableId='1'";
+    $sql = "SELECT * from users WHERE id='1'";
     $res = mysqli_query($db, $sql) or die(mysqli_error());
 
     $test = "";

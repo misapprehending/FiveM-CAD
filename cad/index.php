@@ -1,13 +1,24 @@
 <?php
-    session_start();
     include_once('../includes/css.php');
     include_once('../includes/js.php');
     include_once('../config/config.php');
     include_once('../config/db.php');
-    if(isset($_SESSION['logged_in']))
+    $ip = "::1";
+    $ip2 = $_SERVER['REMOTE_ADDR'];
+    if(!isset($_SESSION['username']))
     {
         header("Location: ../");
         return;
+    }
+    $id = $_SESSION['id'];
+    $sql1 = "SELECT * from users WHERE id='$id'";
+    $res1 = mysqli_query($db, $sql1) or die(mysqli_error());
+
+    if(mysqli_num_rows($res1) > 0) {
+        while($row = mysqli_fetch_assoc($res1)) {
+            $charName = $row['charName'];
+            $unitNo = $row['unitNo'];
+        }
     }
 ?>
 <html>
@@ -18,36 +29,10 @@
     </head>
     <body>
         <div class="container-fluid">
-            <nav class="navbar navbar-expand-lg navbar-dark primary-color-dark">
-                <?php echo"<a class='navbar-brand' href='#'>$server_name Police Department</a>" ?>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                        <a class="nav-link waves-effect waves-light" href="#">Home </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect waves-light" href="#">Civilians</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect waves-light" href="#">New Bolo</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect waves-light" href="#">New Warrant</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link waves-effect waves-light" href="#">Log Out</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            <?php include_once('../includes/nav.php'); ?>
             <br><br><br>
             <center>
-                <h3>Rory O'Connor - 109</h3>
+                <h3><?php echo $charName . ' - ' . $unitNo; ?></h3>
                 <?php $refresh = $_SERVER['PHP_SELF'];  echo "<a href='$refresh'><button type='button' class='btn btn-danger'>Refresh</button></a>";  ?>
             </center>
             <br><br><br>
@@ -65,7 +50,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <th scope="row">1</th>
+                                <th scope="row"><button type="button" class="close" ria-label="Close"><span aria-hidden="true">&times;</span></button></th>
                                 <td>Person</td>
                                 <td>Hawk Mask, Biker Jacket, (Says he's in a biker gang called the "animalz"), Known to roll around with ratman and 'cat mask man'</td>
                             </tr>
@@ -86,7 +71,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <th scope="row">1</th>
+                                <th scope="row"><button type="button" class="close" ria-label="Close"><span aria-hidden="true">&times;</span></button></th>
                                 <td>Canna Kaupapa</td>
                                 <td>Possession of Marked Bills, Attempted Murder of LEO x2, Possession of Illegal Goods, Possession of Methamphetemine.</td>
                             </tr>
@@ -95,6 +80,54 @@
                     </div>
                 <div>
             </div>
+
+
+            <!-- Modals -->
+
+            <!-- New Bolo -->
+            <div class="modal fade" id="createBolo" tabindex="-1" role="dialog" aria-labelledby="createBolo" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title w-100 font-weight-bold">Create Bolo</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mx-3">
+                        <div class="md-form mb-4">
+                            <select class="browser-default custom-select mb-4">
+                                <option value="" disabled selected>Choose option</option>
+                                <option value="person">Person</option>
+                                <option value="vehicle">Vehicle</option>
+                            </select>
+                        </div>
+
+                        <div class="md-form mb-5">
+                            <input type="text" id="createBolo-Description" class="form-control validate">
+                            <label data-error="wrong" data-success="right" for="defaultForm-email">Person / Vehicle Description</label>
+                        </div>
+
+                        <div class="md-form mb-4">
+                            <input type="text" id="createBolo-Reason" class="form-control validate">
+                            <label data-error="wrong" data-success="right" for="defaultForm-pass">Reason for Bolo</label>
+                        </div>
+
+                        <div class="md-form mb-4">
+                            <input type="text" id="createBolo-LastLoc" class="form-control validate">
+                            <label data-error="wrong" data-success="right" for="defaultForm-pass">Last Seen</label>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button class="btn btn-default">Submit</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End New Bolo -->
+
+            <!-- Modals End -->
         </div>
     </body>
 </html>
